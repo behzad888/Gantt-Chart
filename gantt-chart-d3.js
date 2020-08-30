@@ -51,10 +51,10 @@ d3.gantt = function () {
 
     var x = d3.scaleTime()
             .range([0, width - margin.left - margin.right]),
-        y_1 = d3.scale.linear()
+        y_1 = d3.scaleLinear()
             .domain(Object.keys(taskTypes))
             .range([0, getHeight(taskTypes.length) - margin.top - margin.bottom]),
-        y = d3.scale.ordinal()
+        y = d3.scaleOrdinal()
             .domain(taskTypes)
             .rangeRoundBands([0, getHeight(taskTypes.length) - margin.top - margin.bottom], .5);
 
@@ -132,10 +132,10 @@ d3.gantt = function () {
         x = d3.scaleTime()
             .range([0, width - margin.left - margin.right])
             .domain([timeDomainStart, timeDomainEnd]);
-        y_1 = d3.scale.linear()
+        y_1 = d3.scaleLinear()
             .domain(Object.keys(taskTypes))
             .range([0, getHeight(taskTypes.length) - margin.top - margin.bottom]);
-        y = d3.scale.ordinal()
+        y = d3.scaleOrdinal()
             .domain(taskTypes)
             .rangeRoundBands([0, getHeight(taskTypes.length) - margin.top - margin.bottom], .5);
 
