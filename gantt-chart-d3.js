@@ -269,18 +269,13 @@ d3.gantt = function (selector = 'body') {
                     }
                 });
 
-        var zoom = d3.behavior.zoom()
-            .x(x)
-            .y(y_1)
-            .scaleExtent([0.5, 30])
-            .scale(1)
+        var zoom = d3.zoom()
             .on("zoom", zoomed);
 
         chart.select(".gantt-chart").call(zoom);
         xAxisDom.call(zoom);
 
         function zoomed() {
-            //console.log("zoomed");
             gantt.redraw(tasks);
         }
 
