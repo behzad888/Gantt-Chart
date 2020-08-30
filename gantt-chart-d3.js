@@ -3,7 +3,7 @@
  * @version 2.1
  */
 
-d3.gantt = function () {
+d3.gantt = function (selector = 'body') {
     var FIT_TIME_DOMAIN_MODE = "fit";
     var FIXED_TIME_DOMAIN_MODE = "fixed";
 
@@ -13,7 +13,6 @@ d3.gantt = function () {
         bottom: 20,
         left: 150
     };
-    var selector = 'body';
     var xAxisSelector = '.wf-gantt-chart-x-axis';
     var chartSelector = '.wf-gantt-chart';
     var timeDomainStart = d3.timeDay.offset(new Date(), -3);
@@ -54,28 +53,22 @@ d3.gantt = function () {
         y_1 = d3.scaleLinear()
             .domain(Object.keys(taskTypes))
             .range([0, getHeight(taskTypes.length) - margin.top - margin.bottom]),
-        y = d3.scaleOrdinal()
-            .domain(taskTypes)
-            .rangeRoundBands([0, getHeight(taskTypes.length) - margin.top - margin.bottom], .5);
+        y = d3.scaleBand()
+            .rangeRound([0, getHeight(taskTypes.length) - margin.top - margin.bottom])
+            .padding(0.5);
 
 
-    var xAxis = d3.svg.axis()
-        .scale(x)
-        .orient("bottom")
+    var xAxis = d3.axisBottom(x)
         .tickFormat(d3.timeFormat(tickFormat))
         .tickSize(-getHeight(taskTypes.length))
         .ticks(ticks);
 
-    var xAxis_2 = d3.svg.axis()
-        .scale(x)
-        .orient("top")
+    var xAxis_2 = d3.axisTop(x)
         .tickFormat(d3.timeFormat(tickFormat))
         .tickSize(-getHeight(taskTypes.length))
         .ticks(ticks);
 
-    var yAxis = d3.svg.axis()
-        .scale(y)
-        .orient("left")
+    var yAxis = d3.axisLeft(y)
         //.tickSize(0)
         .ticks(5)
         .tickPadding(12);
@@ -135,30 +128,24 @@ d3.gantt = function () {
         y_1 = d3.scaleLinear()
             .domain(Object.keys(taskTypes))
             .range([0, getHeight(taskTypes.length) - margin.top - margin.bottom]);
-        y = d3.scaleOrdinal()
-            .domain(taskTypes)
-            .rangeRoundBands([0, getHeight(taskTypes.length) - margin.top - margin.bottom], .5);
+        y = d3.scaleBand()
+            .rangeRound([0, getHeight(taskTypes.length) - margin.top - margin.bottom])
+            .padding(0.5);
 
-        xAxis = d3.svg.axis()
-                .scale(x)
-                .orient("bottom")
+        xAxis = d3.axisBottom(x)
                 .tickFormat(d3.timeFormat(tickFormat))
                 //.tickSubdivide(true)
                 .tickSize(-getHeight(taskTypes.length))
                 .ticks(ticks),
 
-        xAxis_2 = d3.svg.axis()
-                .scale(x)
-                .orient("top")
+        xAxis_2 = d3.axisTop(x)
                 .tickFormat(d3.timeFormat(tickFormat))
                 //.tickSubdivide(true)
                 .tickSize(-getHeight(taskTypes.length))
                 .ticks(ticks),
 
 
-            yAxis = d3.svg.axis()
-                .scale(y)
-                .orient("left")
+            yAxis = d3.axisLeft(x)
                 //.tickSize(2)
                 .ticks(5)
                 .tickPadding(12);
@@ -186,7 +173,7 @@ d3.gantt = function () {
             .call(yAxis)
             .selectAll("text")
             .style("text-anchor", "start")
-            .attr("transform", "translate(25, -" + y.rangeBand() + ")");
+            .attr("transform", "translate(25, -" + y.bandwidth() + ")");
 
 
         var xAxisSvg = d3.select(xAxisSelector)
@@ -211,7 +198,7 @@ d3.gantt = function () {
             .call(yAxis)
             .selectAll("text")
             .style("text-anchor", "start")
-            .attr("transform", "translate(25, -" + y.rangeBand() + ")");
+            .attr("transform", "translate(25, -" + y.bandwidth() + ")");
 
 
         svg.append("clipPath")
@@ -249,7 +236,7 @@ d3.gantt = function () {
             .style("fill", function (d) { return d.color; })
             // .attr("y", 0)
             .attr("transform", rectTransform)
-            .attr("height", function (d) { return y.rangeBand() - barPaddingBottom; })
+            .attr("height", function (d) { return y.bandwidth() - barPaddingBottom; })
             .attr("width", function (d) { return (x(d.endDate) - x(d.startDate)); })
             //.attr("clip-path", "url(#clip)");
             .on("mouseout",
@@ -317,7 +304,7 @@ d3.gantt = function () {
             .style("fill", function (d) { return d.color; });
         rect
             .attr("transform", rectTransform)
-            .attr("height", function (d) { return y.rangeBand() - barPaddingBottom; })
+            .attr("height", function (d) { return y.bandwidth() - barPaddingBottom; })
             .attr("width", function (d) { return (x(d.endDate) - x(d.startDate)); });
 
         rect.exit().remove();
