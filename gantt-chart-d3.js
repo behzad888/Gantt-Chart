@@ -137,47 +137,45 @@ d3.gantt = function() {
   gantt.redraw = function(tasks) {
     initTimeDomain(tasks);
     initAxis();
+    
+    var svg = d3.select('.chart')
+    .attr('width', width + margin.left + margin.right)
+    .attr('height', height + margin.top + margin.bottom)
+    .select(':first-child')
+    .attr('width', width + margin.left + margin.right)
+    .attr('height', height + margin.top + margin.bottom)
+    .attr('transform', 'translate(' + margin.left + ', ' + margin.top + ')');
 
-    var svg = d3.select('.chart');
-
-    var ganttChartGroup = svg.select('.gantt-chart');
-    var rect = ganttChartGroup.selectAll('rect').data(tasks, keyFunction);
-
-    rect
-      .enter()
-      .insert('rect', ':first-child')
-      .attr('rx', 5)
-      .attr('ry', 5)
-      .attr('class', function(d) {
-        if (taskStatus[d.status] == null) {
-          return 'bar';
-        }
-        return taskStatus[d.status];
-      })
-      .transition()
-      .attr('y', 0)
-      .attr('transform', rectTransform)
-      .attr('height', function(d) {
-        return y.bandwidth();
-      })
-      .attr('width', function(d) {
-        return Math.max(1, x(d.endDate) - x(d.startDate));
-      });
-
-    rect
-      .transition()
-      .attr('transform', rectTransform)
-      .attr('height', function(d) {
-        return y.bandwidth();
-      })
-      .attr('width', function(d) {
-        return Math.max(1, x(d.endDate) - x(d.startDate));
-      });
-
-    rect.exit().remove();
+    svg.selectAll('rect').remove();
 
     svg
-      .select('.x')
+    .selectAll('.chart')
+    .data(tasks, keyFunction)
+    .enter()
+    .insert('rect',':first-child')
+    .attr('rx', 5)
+    .attr('ry', 5)
+    .attr('class', function(d) {
+      if (taskStatus[d.status] == null) {
+        return 'bar';
+      }
+      return taskStatus[d.status];
+    })
+    .attr('y', 0)
+    .attr('transform', rectTransform)
+    .attr('height', function(d) {
+      return y.bandwidth();
+    })
+    .attr('width', function(d) {
+      return Math.max(1, x(d.endDate) - x(d.startDate));
+    });
+    
+    svg
+    .select('.x')
+        .attr(
+          'transform',
+          'translate(0, ' + (height - margin.top - margin.bottom) + ')'
+        )
       .transition()
       .call(xAxis);
 
