@@ -2,8 +2,9 @@
  * @author Dimitry Kudrayvtsev
  * @version 2.1
  */
-
-d3.gantt = function() {
+var d3;
+var gantt =function(d3Module) {
+  d3 = d3Module;
   var FIT_TIME_DOMAIN_MODE = 'fit';
   var FIXED_TIME_DOMAIN_MODE = 'fixed';
 
@@ -250,3 +251,5 @@ d3.gantt = function() {
 
   return gantt;
 };
+
+exports.gantt = gantt;
